@@ -10,6 +10,7 @@
   <script>
     window.addEventListener("message", async (e) => {
       const html = e.data.html;
+      alert("recieved content")
       document.getElementById("target").innerHTML = html;
 
       // Wait for rendering to settle
