@@ -14,6 +14,8 @@
     window.addEventListener("message", async (e) => {
       alert("Message received!");
 
+      alert(e.data);
+
       const html = e.data.html;
       if (!html) {
         alert("No HTML received.");
