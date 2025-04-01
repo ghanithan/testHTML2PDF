@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>PDF Generator</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+</head>
+<body>
+  <div id="target"></div>
+
+  <script>
+    window.addEventListener("message", async (e) => {
+      const html = e.data.html;
+      document.getElementById("target").innerHTML = html;
+
+      // Wait for rendering to settle
+      await new Promise(res => setTimeout(res, 100));
+
+      // Generate PDF
+      html2pdf().from(document.getElementById("target")).save("document.pdf");
+
+      // Optional: Auto-close tab
+      setTimeout(() => window.close(), 3000);
+    });
+  </script>
+</body>
+</html>
