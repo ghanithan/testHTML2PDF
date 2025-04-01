@@ -5,25 +5,45 @@
 </head>
 <body>
   <h1>HTML to PDF via New Tab</h1>
-  <div id="content">
+
+  <div id="content" style="font-family: sans-serif; padding: 1rem;">
     <h2>Invoice</h2>
-    <p>This is a sample invoice generated via a new tab.</p>
-    <input type="text" />
+    <p>This is a sample invoice rendered and downloaded from a new tab.</p>
   </div>
-  <button onclick="openPDFTab()">Generate PDF</button>
+
+  <button onclick="generatePDF()">Generate PDF</button>
 
   <script>
-    function openPDFTab() {
+    function generatePDF() {
       const content = document.getElementById("content").innerHTML;
-      const pdfTab = window.open("pdf-generator.html", "_blank");
 
-      // Wait until the tab is ready to receive the message
-      const interval = setInterval(() => {
-        if (pdfTab && pdfTab.document.readyState === 'complete') {
-          clearInterval(interval);
-          pdfTab.postMessage({ html: content }, "*");
-        }
-      }, 200);
+      const html = `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <title>PDF Generator</title>
+          <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"><\/script>
+        </head>
+        <body>
+          <div id="target" style="padding: 2rem; font-family: sans-serif;">
+            ${content}
+          </div>
+
+          <script>
+            window.onload = async function () {
+              const el = document.getElementById('target');
+              await new Promise(r => requestAnimationFrame(() => setTimeout(r, 500)));
+              await html2pdf().from(el).save('generated.pdf');
+              setTimeout(() => window.close(), 3000);
+            };
+          <\/script>
+        </body>
+        </html>
+      `;
+
+      const blob = new Blob([html], { type: "text/html" });
+      const url = URL.createObjectURL(blob);
+      window.open(url, "_blank");
     }
   </script>
 </body>
